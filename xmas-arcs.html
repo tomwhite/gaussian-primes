@@ -1,0 +1,25 @@
+<html>
+ <head>
+  <title>Gaussian Primes Christmas Tree (Arcs)</title>
+  <script type="application/javascript" src="gaussian.js"></script>
+  <script type="application/javascript">
+function draw() {
+	var canvas = document.getElementById("canvas");
+	var ctx = canvas.getContext("2d");
+
+	ctx.translate(200, 0)
+	ctx.rotate(3 * Math.PI / 8);
+	ctx.scale(10, 10);
+
+	points = sortedGaussianPrimes(50, 200);
+	drawLines(ctx, points, "green", true);
+	drawPoints(ctx, points, "red");
+
+}
+  </script>
+ </head>
+ <body onload="draw()">
+   <p><a href="xmas-lines.html">Christmas Tree (Lines)</a> | Christmas Tree (Arcs) | <a href="plot.html">Gaussian Primes Plot</a> | <a href="gaussian.js">Source</a></p>
+   <canvas id="canvas" width="600" height="600"></canvas>
+ </body>
+</html>
