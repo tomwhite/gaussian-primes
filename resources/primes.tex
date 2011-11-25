@@ -1,0 +1,280 @@
+\documentclass[a4paper]{article}
+\author{Tom~White}
+\title{Gauss and Primes}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+\subsection{Summary}
+
+Gauss' empirical discovery of PNT.
+
+Motivations for Gaussian primes - unique factorization. Applications.
+
+End by asking: how are Gaussian primes distributed?
+
+\subsection{The Conjecture}
+In 1792, when he was only 15 years old\footnote{check, see Dunham pp78-79, Maor 184-185},
+Carl Friedrich Gauss noticed a striking
+connection between the distribution of the prime numbers and the logarithmic function.
+Gauss had a table of prime numbers that had been compiled by Johann Lambert\footnote{ref?}, and
+he was examining the number of prime numbers less than or equal to a given integer $x$.
+It is now customary to denote this function as $\pi(x)$. Based purely on numerical evidence 
+Gauss wrote
+\begin{quote}
+Primzahlen unter $a$ ($=\infty$) $a/\textrm{l}a$.\footnote{find a more original source than Maor}
+\end{quote}
+In today's notation we would write $\pi(x) \sim x/\log x$, that is, as $x$ tends to infinity
+the ratio between $\pi(x)$ and $x/\log x$ tends to $1$. Gauss never proved his conjecture, indeed
+it remained unproven for just over one hundred years until Hadamard and de la Vall\'ee-Poussin
+independently proved in 1896 what became known as the Prime Number Theorem.
+
+\subsection{Gaussian Primes}
+
+[Gauss and Number Theory - King and Queen?]
+
+While investigating the properties of biquadratic reciprocity (which we shan't go into)
+Gauss introduced a generalisation of the integers, now known as \emph{Gauss\-ian integers}.\footnote{\cite{hardyandwright} p188 note 12.1}
+These are the complex numbers $a + bi$, where $a$ and $b$ are both ordinary (rational) integers.
+It turns out that these numbers behave in a manner which is analogous to rational integers.
+For example, it is easy to check that the sums and products of Gaussian integers are themselves
+Gaussian integers:
+\begin{displaymath}
+(a + bi) + (c + di) = (a + c) + (b + d)i
+\end{displaymath}
+\begin{displaymath}
+(a + bi)(c + di) = (ac - bd) + (ad + bc)i
+\end{displaymath}
+
+Gauss proved that all Gaussian integers can be uniquely factored into prime Gaussian integers.
+This is of course true of rational integers and Gauss was actually the first to
+explicitly state the theorem for rational integers\footnote{DA, see ref in \cite{hardyandwright} p10, note 1.3},
+athough the result was used by earlier mathematicians. But however familiar the property of
+unique factorisation there are number systems that do not have this property. For instance, for
+the numbers $a + b\sqrt{-5}$, where $a$ and $b$ are both rational integers
+\begin{displaymath}
+6 = 2\cdot 3 = (1 + \sqrt{-5})(1 - \sqrt{-5})
+\end{displaymath}
+and it can be shown that $2$, $3$, $1 + \sqrt{-5}$, and $1 - \sqrt{-5}$ are all prime.\footnote{do it!}
+
+Having defined the Gaussian integers it is natural to ask: which Gaussian integers are prime?
+How do the Gaussian primes relate to the rational primes? And in light of Gauss' discovery of
+the distribution of the rational primes, how are the Gaussian primes distributed?
+
+\section{What are Gaussian Primes?}
+
+\subsection{Characterisation}
+We first look at some definitions and simple results concerning Gaussian primes.
+This treatment follows that in Hardy and Wright \cite{hardyandwright}.
+
+A \emph{Gaussian integer} is a complex number $a + bi$, where $a$ and $b$ are both (rational) integers.
+A \emph{unity} is a power of $i$, and we say a Gaussian integer $g$ is \emph{associated} with
+$\epsilon g$ where $\epsilon$ is any unity. In other words the \emph{associates} of $g$ are
+$g$, $ig$, $-g$, $-ig$.
+
+The \emph{norm} of a Gaussian integer $a + bi$ is defined to be $N(a + bi) = a^{2} + b^{2}$.
+The norm of a unity is always 1.
+
+A \emph{Gaussian prime} is a Gaussian integer, not 0 or a unity, divisible only by numbers associated with itself or 1. 
+
+Let's now consider the rational primes - are they prime when considered as Gaussian integers?
+$2$ is not prime since it equals $(1 + i)(1 - i)$ - these factors are not associated with
+itself ($2$) or 1. $3$ is still prime, this can be seen by trial division by all Gaussian integers
+with norm less than or equal to 3 that are not 0 or a unity, that is: $1 + i$ (ignoring associates).
+\begin{displaymath}
+\frac{3}{1 + i} = \frac{3(1 - i)}{(1 + i)(1 - i)} = \frac{3(1 - i)}{1^{2} + 1^{2}}
+= \frac{3}{2} - \frac{i}{2}
+\end{displaymath}
+and since $\frac{3}{2} - \frac{i}{2}$ is not a Gaussian integer $3$ is a Gaussian prime.
+\footnote{See Bell in Vol 1 of World of Maths, on Gauss for why arithmetic is harder than algebra. This demonstration
+that $3$ is still prime stirkes to the heart of it. More discussion please!}
+Continuing in this way we can create a little table indicating when a rational prime $p$
+is divisible by a Gaussian prime $a + bi$:
+
+\begin{tabular}{rrr}
+$p$ & $a$ & $b$ \\
+\hline
+2 & 1 & 1\\
+3 \\
+5 & 2 & 1\\
+7 \\
+11 \\
+13 & 3 & 2\\
+17 & 4 & 1\\
+19 \\
+23 \\
+29 & 5 & 2\\
+31 \\
+37 & 6 & 1\\
+41 & 5 & 4\\
+43 \\
+47 \\
+\end{tabular}
+
+There is a nice proof that rational primes of the form $4n + 1$ are \emph{never} Gaussian primes.
+It starts from Wilson's test for primality: $p$ is prime if and only if $p$ divides $(p - 1) ! + 1$.\footnote{Reference proof}
+Now $p = 4n + 1$, so it divides
+\begin{eqnarray}
+(4n)! + 1 & = & (1 \cdot 2 \cdot \ldots \cdot 2n \cdot (2n + 1) \cdot (2n + 2) \cdot \ldots \cdot 4n) + 1 \nonumber\\
+          & \equiv & (1 \cdot 2 \cdot \ldots \cdot 2n \cdot (-2n) \cdot (-(2n - 1)) \cdot \ldots \cdot (-1)) + 1 \pmod p\nonumber\\
+          & = & ((2n)!)^{2} + 1 \nonumber\\
+          & = & ((2n)! + i)((2n)! - i) \nonumber
+\end{eqnarray}
+But $p$ divides neither factor so $p$ must have a Gaussian prime factor.
+(In fact, the greatest common divisor of $(2n)! + i$ and $p$ is a prime factor of $p$.)
+
+We can go further: if $a + bi$ is a (positive\footnote{define}) prime divisor of $p$ then so is $a - bi$:
+\begin{displaymath}
+\frac{p}{a \pm bi} = \frac{p(a \mp bi)}{(a \pm bi)(a \mp bi)} = \frac{p(a \mp bi)}{a^{2} + b^{2}}
+= \frac{pa}{a^{2} + b^{2}} \mp \frac{pbi}{a^{2} + b^{2}}
+\end{displaymath}
+
+Since $a \neq b$, $a + bi$ and $a - bi$ are not associates, they are distinct primes, so their product
+$(a + bi)(a - bi) = a^{2} + b^{2}$ divides $p$. But $p$ is a rational prime, so $p$ must \emph{equal}
+$a^{2} + b^{2}$. This establishes...\footnote{Fermat}.
+
+From the previous table it looks as if the rational primes of the form $4n + 3$
+are also Gaussian primes. This is in fact true for all such primes and
+we can prove this by supposing that $\pi \lambda = p$ where $\pi$ is a Gaussian prime. Then
+\begin{displaymath}
+N\pi N\lambda = p^{2}.
+\end{displaymath}
+Therefore either $N\lambda = 1$, in which case $\lambda$ is a unity and $\pi$ is an associate
+of $p$, or
+\begin{equation} \label{eq:0}
+N\pi = a^{2} + b^{2} = p.
+\end{equation}
+Now a square is equal to 0 or 1 (mod 4), so (\ref{eq:0}) cannot be satisfied. Therefore the alternative
+case must occur: $\pi$ is an associate of $p$, so $p$ is a Gaussian prime.
+
+Incidently, equation (\ref{eq:0}) also shows that $1 + i$ (and its associates, of course) is prime.
+
+\subsection{Proofs}
+
+(Need Theorem 250 of \cite{hardyandwright}...)
+
+Let $\pi = a + bi$ be a Gaussian prime. If
+\begin{displaymath}
+\pi \mid p, \pi \lambda = p,
+\end{displaymath}
+then 
+\begin{displaymath}
+N\pi N\lambda = p^{2}.
+\end{displaymath}
+Therefore either $N\lambda = 1$, in which case $\lambda$ is a unity (prove it!) and $\pi$ is an associate
+of $p$, or
+\begin{equation} \label{eq:1}
+N\pi = a^{2} + b^{2} = p.
+\end{equation}
+
+We now look at different types of prime $p$.
+
+\begin{enumerate}
+\item If $p = 2$, then
+\begin{displaymath}
+p = 1^{2} + 1^{2}.
+\end{displaymath}
+So $1 + i $ and its associates are Gaussian primes.
+\item If $p = 4n + 3$, then (\ref{eq:1}) cannot be satisfied since a square is equal to 0 or 1 (mod 4).
+Hence ... (?)
+\item If $p = 4n + 1$, then ...?
+\end{enumerate}
+
+Gaussian primes may be fully characterised by the following:
+\begin{enumerate}
+\item $1 + i$ and its associates ($-1 + i$, $-1 - i$, $1 - i$) 
+\item the rational primes $4n + 3$ and their associates 
+\item the factors $a + bi$ of the rational primes $4n + 1$ 
+\end{enumerate}
+
+This characterisation makes it easy to plot the distribution of Gaussian primes.
+It is sufficient to consider only $a + bi$ where $a$ is positive, and $b$ lies between 0 and $a$.
+In fact, $1 + i$ is the only such prime whose real part and imaginary part are equal.
+For the rest there are two cases: 
+\begin{enumerate}
+\item If $b = 0$, $a + bi$ is prime if $a$ is a prime of the form $4n + 3$. 
+\item If $b \neq 0$, $a + bi$ is prime if $a^{2} + b^{2}$ is prime. 
+\end{enumerate}
+
+These cases are easily checked using a list of (rational) prime numbers. 
+My program draws the distribution of Gaussian primes bounded by a prescribed circle in the complex plane.
+It uses a table of primes generated using the sieve of Eratosthenes. 
+
+\section{The Prime Number Theorem}
+
+\subsection{Summary}
+
+Table of $x$, $\pi(x)$, etc.
+
+Discussion of empirical results Gauss etc.
+
+Description of the proof of PNT - historical. Number of different types of proofs.
+
+Q: is $\pi_{4,1} > \pi_{4,3}$ always - current status. (Mention change of sign of $Li(x) - \pi(x)$)
+
+Density result for Gaussian primes - derivation. Nice result linking primes, $e$ and $\pi$.
+
+"Walking" from origin to infinity using the Gaussian primes as "stepping stones" and taking
+steps of bounded length. See p34 Guy. Any progress on at least 4?
+
+Visualisation discussion - Christmas tree, Op Art, scaling $r$ to even out the distribution - the
+city skyline plot.
+
+\subsection{Empirical observations}
+
+\begin{tabular}{rrrrrr}
+$x$       & $\pi(x)$    & $\lfloor x/\log x \rfloor$ & $\pi_{4,1}(x)$ & $\pi_{4,3}(x)$ & $\lfloor x/2\log x \rfloor$\\
+\hline
+$10^{1}$  & $4$         & $4$                       & $1$            & $2$            & $2$\\
+$10^{2}$  & $25$        & $21$                      & $?$            & $?$\\
+$10^{3}$  & $168$ \\
+$10^{4}$  & $1,229$ \\
+$10^{5}$  & $9,592$ \\
+$10^{6}$  & $78,498$ \\
+$10^{7}$  & $664,579$ \\
+$10^{8}$  & $5,761,455$ \\
+$10^{9}$  & $50,847,534$ \\
+$10^{10}$ & $455,052,511$ & $434,294,481$\\
+\end{tabular}
+
+\subsection{The Density of Gaussian Primes}
+
+We know from the Prime Number Theorem that $\pi(x) \sim x/\log x$. In other words the density of the
+rational primes is $1/\log x$ for large $x$. Define $\pi_{d,a}(x)$ as the number of primes of the form
+$dn + a$ less than or equal to $x$.\footnote{Ribenboim p 214} Then
+
+\begin{displaymath}
+\pi_{d,a}(x) \sim \frac{1}{\phi (d)}\frac{x}{\log x}
+\end{displaymath}
+
+Since $\phi (4)=2$ the density of primes of the form $4n + 1$ is equal to the density of those
+of the form $4n + 3$, that is $1/2\log x$. This is intuitively plausible and consistent with the
+empirical observations.\footnote{Previous table - link}
+
+Now consider a circle of radius $r$ and the Gaussian primes in the sector $0 \leq \theta \leq \pi/2$.
+For large $r$ there are $r/2\log r$ Gaussian primes on the real axis - those of the form $4n + 3$.
+For those of the form $p = 4n + 1$, we know that $p = a^2 + b^2$ corresponds to the Gaussian
+prime $a + bi$. For this to lie in the circle of radius $r$ requires that $\sqrt{a^2 + b^2} \leq r$, i.e.
+$p \leq r^2$. So for large $r$ there are $r^2/2\log r^2 = r^2/4\log r$ such Gaussian primes in
+the sector. So a long way from the origin the density is purely due to the primes of shape $4n + 1$,
+and is
+
+\begin{displaymath}
+\frac{2}{\pi \log r}
+\end{displaymath}
+
+
+
+\begin{thebibliography}{9}
+\bibitem{conwayandguy}Conway, John H. and Guy, Richard K., (1996),
+\emph{The Book of Numbers}, Springer Verlag. 
+\bibitem{hardyandwright}Hardy, G. H. and Wright, E. M. (1938),
+\emph{The Theory of Numbers}, Oxford University Press, pp177-186, pp218-219.  
+\bibitem{ribenboim}Ribenboim, Paulo, (1989),
+\emph{The Book of Prime Number Records}, Springer Verlag. 
+\bibitem{rose}Rose, H.E., (1988),
+\emph{A Course in Number Theory}, Oxford University Press, p92.
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,802 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0049)http://linux.rice.edu/~rahul/hbaker/Gaussian.html -->
+<HTML><HEAD><TITLE>ACM Sigplan Notices 28, 11 (Nov 1993), 22-27.</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1"><!-- This document was created from RTF source by rtftohtml version 2.7.5 --><LINK 
+rev=made href="mailto:hbaker@netcom.com">
+<META content="MSHTML 5.50.4134.600" name=GENERATOR></HEAD>
+<BODY>
+<H1>Complex Gaussian Integers for 'Gaussian Graphics'</H1>
+<ADDRESS><A href="http://linux.rice.edu/~rahul/hbaker/home.html">Henry G. 
+Baker</A> </ADDRESS>
+<ADDRESS>Nimble Computer Corporation, 16231 Meadow Ridge Way, Encino, CA 
+91436<BR>(818) 501-4956 (818) 986-1360 (FAX)<BR>Copyright (c) 1993 by Nimble 
+Computer Corporation </ADDRESS>
+<HR>
+Some recent computer languages incorporate rational numbers, complex numbers, 
+and rational complex numbers. We extend these numeric facilities to deal 
+properly with <I>Gaussian integers</I>--i.e., complex numbers whose real and 
+imaginary parts are both ordinary (rational) integers. In addition to their 
+intrinsic mathematical interest, such extensions also raise interesting 
+questions regarding polymorphism and multiple inheritance.
+<P>Since Gaussian integers are the coordinates of discrete square pixels in the 
+complex plane, complex operations can be used to implement 2-D graphics 
+operations. Many 2-D algorithms are more elegant in complex number form--e.g., 
+one can envision a 2-D spreadsheet for scientific applications whose coordinates 
+are Gaussian integers. 
+<HR>
+
+<H2>A. INTRODUCTION</H2>The level of abstraction in abstract algebra and 
+abstract data types may have been taken too far--we learn about abstract rings 
+and fields instead of enjoying the beauty of particular rings and fields--e.g., 
+number theory. Once the basic concepts are in hand, we should revel in the 
+polymorphism of Gaussian integers as pairs of integers, as well as atomic 
+elements of the Gaussian ring, much as we revel in the dual role of C "ints" as 
+both integers and bit strings.
+<P>Many computer languages--e.g., Fortran-77, APL--incorporate complex numbers 
+as a primitive datatype,<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn1">[1]</A> and some 
+recent languages--e.g., Common Lisp, Scheme--incorporate rational numbers, as 
+well. Unfortunately, these two datatypes have not been well integrated with each 
+other in these computer languages, although mathematicians have known since the 
+time of Gauss how such an integration may be accomplished by means of 
+<I>Gaussian integers</I>--i.e., complex numbers whose real and imaginary parts 
+are both ordinary (rational) integers.
+<P>Gaussian integers, in addition to their intrinsic mathematical interest, also 
+serve as an important "test case" for theories of polymorphism in 
+object-oriented programming, since Gaussian integers "inherit" from both the 
+integers and the complex numbers, and since complex rational numbers can be seen 
+either as Q[<I>i</I>] (the rationals extended with the complex number <I>i</I>, 
+<I>i</I>^2=-1, <I>i</I>^4=1), or as the field of quotients of Gaussian integers 
+(ratios of Gaussian integers analogous to the ratios of rational integers found 
+in the field Q of the rational numbers).
+<P>We give code for the appropriate functions in Common Lisp, because it already 
+has arbitrary-precision integers, arbitrary-precision rational numbers, and 
+complex rational numbers, and therefore the incremental code required for 
+incorporating Gaussian integers in Common Lisp is quite small relative to most 
+other languages.
+<P>We suggest that facilities for Gaussian integers be included in generic 
+complex number standards for arbitrary computer languages [Hodgson91]. Such 
+facilities are in accord with the basic philosophy that if a primitive numeric 
+datatype is provided at all, then <I>all</I> of the relevant primitive functions 
+should be extended to deal with this datatype, so long as there is general 
+agreement among mathematicians regarding the meaning of such extensions. 
+<H2>B. PROPERTIES OF THE GAUSSIAN INTEGERS</H2>The Gaussian integers Z[<I>i</I>] 
+are complex numbers in which both the real and imaginary parts are ordinary (or 
+"rational") integers. They form a countable subset of the traditional complex 
+numbers which is closed under addition and multiplication--i.e., the Gaussian 
+integers are a <I>subring</I> of the complex numbers. The <I>units</I> of this 
+subring are the four Gaussian integers which have multiplicative inverses, 
+namely +-1 and +-<I>i</I>.
+<P>The Gaussian integers have a Euclidean greatest common divisor algorithm, and 
+hence they form a Euclidean <I>principle ideal domain</I>.<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn2">[2]</A> They thus 
+have a unique<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn3">[3]</A> 
+factorization into <I>Gaussian primes</I>, which are the numbers: a) 
++-1+-<I>i</I>, b) ordinary (rational) integer primes of the form |p|=4k+3, and 
+c) +-m+-n<I>i</I>, +-n+-m<I>i</I>, where m^2+n^2=4k+1=|p|, p an ordinary 
+(rational) integer prime. Thus, in going from the ordinary (rational) integers 
+to the Gaussian integers, each ordinary (rational) prime becomes either 
+<I>four</I> (|p|=2, |p|=4k+3) or <I>eight</I> (|p|=4k+1) Gaussian primes, and 
+these are the only Gaussian primes.
+<P><A name=primes><IMG 
+src="ACM Sigplan Notices 28, 11 (Nov 1993), 22-27_files/Gaussian-primes512.gif"></A>
+<P>Plot of the Gaussian primes in the first quadrant.
+<P>We can now count the number of Gaussian integers which lie on a circle of 
+radius sqrt(n) around the origin. If any prime of the form |p|=4k+3 appears with 
+an <I>odd</I> exponent in the (rational) factorization of n, then the circle 
+includes <I>no</I> Gaussian integers. Otherwise, let n=n0*n1*n3, where n0 
+contains all of the powers of 2, n1 contains all of the primes of the form 
+|p|=4k+1, and n3 contains all of the primes of the form |p|=4k+3; the circle of 
+radius sqrt(n) then contains 4*d(n1) points, where d(n1) is the number of 
+(rational) divisors of n1. For example, there are <I>no</I> Gaussian integers on 
+the circle of radius sqrt(7), but 4*(3+1)*(2+1)=48 Gaussian integers on the 
+circle of radius sqrt(169000)=sqrt(2^3*5^3*13^2).
+<P>Since ordinary (rational) primes of the form |p|=4k+3 are also Gaussian 
+primes, the ring of Gaussian integers Z[<I>i</I>] modulo p is isomorphic to the 
+finite field Zp[x]/(x^2+1) of norm(p)=p^2 elements, since the polynomial x^2+1 
+is irreducible (non-factorable) over Zp [Lange70]. On the other hand, if 
+|p|=4k+1, then the ring of Gaussian integers Z[<I>i</I>] modulo m+n<I>i</I>, 
+where m^2+n^2=|p|, is a finite field of norm(m+n<I>i</I>)=|p| elements, which is 
+therefore isomorphic to the finite field Zp [Lange70], but which folds up its 
+structure in a more interesting 2-dimensional way. 
+<H2>C. GAUSSIAN-INTEGERP</H2>We first need a function which will tell whether we 
+have a Gaussian integer. <TT><PRE>(defun gaussian-integerp (z)
+  (assert (numberp z))
+  (and (integerp (realpart z)) (integerp (imagpart z))))
+</PRE></TT>
+<H2>D. NORM</H2>The next new function is the <TT>norm</TT> function, which is 
+equal to the square of the usual absolute value function (<TT>abs</TT>), but is 
+more conveniently defined as the product of a number z by its complex conjugate 
+z^*. For some obscure reason, Common Lisp and most other implementations of 
+complex numbers do <I>not</I> define the <TT>norm</TT> function, even though it 
+is almost as useful (e.g., it is also 
+<I>multiplicative</I>--norm(a*b)=norm(a)*norm(b)) and it is usually less 
+expensive to compute than the <TT>abs</TT> function.<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn4">[4]</A> <TT><PRE>(defun norm (z)
+  (realpart (* z (conjugate z)))) ; "realpart" needed only for non-Lisp langs.
+</PRE></TT>
+<H2>E. FLOOR, CEILING, TRUNCATE, ROUND</H2>We now consider extending to the 
+Gaussian integers (actually, to all complex numbers) the four division functions 
+of Common Lisp which produce integer quotients. While all four functions produce 
+a quotient q and a remainder r from a dividend z and a divisor d, such that z = 
+q*d + r and 0&lt;=|r|&lt;=|d|, the <TT>floor</TT> function produces a remainder 
+r of the <I>same sign as the divisor</I>, the <TT>ceiling</TT> function produces 
+a remainder of the <I>opposite sign as the divisor</I>, the <TT>truncate</TT> 
+function produces a remainder of the <I>same sign as the dividend</I>, and the 
+<TT>round</TT> function produces a remainder of the <I>least absolute value</I>.
+<P>When we divide <I>complex</I> numbers, however, we must now worry about the 
+<I>phase</I> of the divisor rather than just its <I>sign</I>. We know that for a 
+Gaussian integer divisor m+n<I>i</I>, we need m^2+n^2 distinct remainders, so 
+the most elegant choice of representative remainders is <I>a square of area 
+m^2+n^2 which is tilted at an angle of atan(n/m)</I>;<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn5">[5]</A> 
+equivalently, we consider the remainder fraction r/d to reside in an 
+<I>upright</I> <I>square</I> of area 1. The correct quotient for this choice is 
+computed by 
+q=divide(realpart(z*d^*),d*d^*)+<I>i</I>*divide(imagpart(z*d^*),d*d^*),<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn6">[6]</A> where 
+"divide" is one of <TT>floor</TT>, <TT>ceiling</TT>, <TT>truncate</TT> or 
+<TT>round</TT>, and the correct remainder is computed by r=z-q*d. This q 
+produces the correct remainder even when z,d are both real, so long as 
+divide(z,d)=divide(-z,-d). We give definitions for complex <TT>floor</TT> and 
+<TT>round</TT>; the other two are analogous. The remainders r produced by the 
+<TT>round</TT> function with a complex divisor d <I>do</I> satisfy the 
+requirement 0&lt;=|r|&lt;=|d|, but the remainders from the other three functions 
+<I>do not</I> satisfy this requirement. <TT><PRE>(defun complex-floor (z d)
+  ;;; Should use defmethod on "floor", instead.
+  (let* ((dc (conjugate d)) (dn (* d dc)) (zdc (* z dc)))
+    (complex (floor (realpart zdc) dn) (floor (imagpart zdc) dn))))
+
+(defun complex-round (z d)
+  ;;; Should use defmethod on "round", instead.
+  (let* ((dc (conjugate d)) (dn (* d dc)) (zdc (* z dc)))
+    (complex (round (realpart zdc) dn) (round (imagpart zdc) dn))))
+</PRE></TT>These functions do not exhaust the possibilities for Gaussian integer 
+division. Criteria for evaluating the possibilities are the following (see also 
+[McDonnell73] [Forkes81]): 
+<UL>
+  <LI>the set of remainders forms a simple shape<A 
+  href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn7">[7]</A> 
+  <LI>the set of remainders "tiles" the complex plane in a doubly periodic 
+  fashion<A href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn8">[8]</A> 
+
+  <LI>each remainder should have its norm smaller than the norm of the divisor<A 
+  href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn9">[9]</A> 
+  <LI>the set of remainders is a <I>convex</I> set 
+  <LI>division treats real and imaginary parts similarly, but not necessarily 
+  independently<A 
+  href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn10">[10]</A> 
+  <LI>division "works" for expressing numbers with complex bases [Knuth81,4.1]<A 
+  href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn11">[11]</A> 
+  <LI>division "works" for doing continued fractions with Gaussian integer 
+  elements [Wall48]<A 
+  href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn12">[12]</A> 
+</LI></UL>For example, consider the Gaussian integer divisor d=m+n<I>i</I>, 
+where gcd(m,n)=1. Then gcd(n,m^2+n^2)=1=a*n+b*(m^2+n^2), so n has a 
+multiplicative inverse n^(-1)=a (mod m^2+n^2). Since 
+m^2+n^2=(m+n<I>i</I>)*(m-n<I>i</I>), m+n<I>i</I>=0 (mod m^2+n^2), and therefore, 
+<I>i</I>=-n^(-1)*m (mod m^2+n^2). In other words, <I>i</I> is congruent (mod 
+m^2+n^2) to the rational integer -n^(-1)*m. Hence, for such a d=m+n<I>i</I>, 
+<I>every</I> Gaussian integer z=x+y<I>i</I> is congruent to some rational 
+integer j, which can be found by considering z=x+y<I>i</I>=x+y*(-n^(-1)*m)=j 
+(mod m^2+n^2). But choosing the set of representatives j is equivalent to tiling 
+the plane with horizontal rectangles which are 1 unit high and m^2+n^2 units 
+wide [Holladay80].
+<P><A name=figure><IMG 
+src="ACM Sigplan Notices 28, 11 (Nov 1993), 22-27_files/Gaussian1.gif"></A>
+<P><TT>floor</TT> remainders (mod 3+2<I>i</I>) (black) and (mod 
+(3+2<I>i</I>)*(3-2<I>i</I>)=13) (grey); <I>i </I>= 5 (mod 3+2<I>i</I>). 
+<H2>F. GCD AND LCM--PUTTING SQUARE PEGS INTO ROUND HOLES</H2>Using the 
+<TT>round</TT> function, we can compute the <TT>gaussian-gcd</TT> function with 
+the Euclidean algorithm. We define <TT>(gaussian-gcd z1 z2)</TT> to be the 
+greatest common divisor computed by this algorithm, up to units. In order to 
+make the greatest common divisor unique, we multiply by a unit so that it always 
+ends up on the non-negative real axis or in the first quadrant. <TT><PRE>(defun gaussian-gcd1 (z1 z2)
+  ;;; Compute gcd using Euclidean algorithm and least abs remainders.
+  (let* ((nz1 (norm z1)) (nz2 (norm z2)))
+    (if (&lt; nz1 nz2) (gaussian-gcd1 z2 z1)
+      (if (= nz2 0) z1
+        (gaussian-gcd1 z2 (- z1 (* z2 (complex-round z1 z2))))))))
+
+(defun gaussian-gcd (z1 z2)
+  ;;; Should use defmethod on "gcd", instead.
+  ;;; Fix up result of gaussian-gcd1 using units.
+  (let* ((g (gaussian-gcd1 z1 z2))
+         (gr (realpart g)) (gi (imagpart g)))
+    (cond ((plusp gr) (if (minusp gi) (* (complex 0 1) g) g))
+          ((minusp gr) (if (plusp gi) (* (complex 0 -1) g) (- g)))
+          (t (abs gi)))))
+
+(defun gaussian-lcm (z1 z2)
+  ;;; Should use defmethod on "lcm", instead.
+  (/ (* z1 z2) (gaussian-gcd z1 z2)))
+</PRE></TT>The convergence of this gcd algorithm requires that the complex round 
+function fit a <I>square peg</I>--the set of remainders 
+{x+y<I>i</I>=z-d*round(z,d)}--into a <I>round hole</I> {x^2+y^2&lt;norm(d)}. 
+Slowly converging Gaussian gcd's can be constructed from a Gaussian Fibonacci 
+sequence: <I>i</I>, 1+<I>i</I>, 1+2<I>i</I>, 2+3<I>i</I>, 3+5<I>i</I>, ..., 
+F[k]+<I>i</I>F[k+1], where F[k] is the k'th Fibonacci number [Harmon81]. 
+Gaussian Fibonacci numbers have a Fibonacci norm: 
+norm(F[k]+<I>i</I>F[k+1])=F[k]^2+F[k+1]^2=F[2k+1]. Furthermore, 
+F[2k]^2=F[2k-1]^2=-1 (mod F[2k+1]), so we have an explicit formula for <I>i</I>: 
+<I>i</I>=F[2k] (mod F[2k+1]). 
+<H2>G. EVENP AND ODDP</H2>The four numbers +-1+-<I>i</I> can all be gotten from 
+1+<I>i</I> by multiplying by the units +-1, +-<I>i</I>; e.g., 1-<I>i</I> = 
+-<I>i</I>*(1+<I>i</I>). Since 2 = (1-<I>i</I>)*(1+<I>i</I>), the presence of a 
+factor of 1+<I>i</I> in an ordinary (rational) integer indicates evenness. 
+Therefore, to extend <TT>evenp</TT> to Gaussian integers, we test for 
+divisibility by 1+<I>i</I>. Since the "even" and "odd" lattice points tile the 
+Gaussian plane in a chessboard fashion, the predicates <TT>evenp</TT> and 
+<TT>oddp</TT> are equivalent to "whitep" and "blackp".<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn13">[13]</A>
+<P>Divisibility of a number z by 1+<I>i</I> is equivalent to divisibility of 
+norm(z) by 2, so we can more efficiently check for the evenness of norm(z). But 
+we can do even better [Knuth81,4.1#28ans]. If z=m+n<I>i</I>, then 
+norm(m+n<I>i</I>) is even if and only if m^2 and n^2 are both odd or both even. 
+But m^2 is even if and only if m is even so norm(m+n<I>i</I>) is even if and 
+only if m and n are both odd or both even. Furthermore, m+n is even if and only 
+if m and n are both odd or both even. Finally, z=m+n<I>i</I> is even if and only 
+if m+n is even. <TT><PRE>(defun gaussian-evenp (z)
+  ;;; Should use defmethod on "evenp", instead.
+  (evenp (+ (realpart z) (imagpart z))))
+
+(defun gaussian-oddp (z)
+  ;;; Should use defmethod on "oddp", instead.
+  (not (gaussian-evenp z)))
+</PRE></TT>
+<H2>H. NUMERATOR AND DENOMINATOR</H2>These two functions return the integral 
+numerator and integral denominator of a fraction which has the same value as the 
+argument, i.e., numerator(m/n)/denominator(m/n) = m/n. Furthermore, the 
+numerator and denominator are in "lowest terms"--i.e., 
+gcd(numerator(m/n),denominator(m/n)) = 1. Finally, the denominator should be 
+standardized (canonicalized), which is achieved in most representations of the 
+rationals by forcing the denominator to be positive.
+<P>The numerator and denominator functions can be extended to any complex number 
+whose real and imaginary parts are rational numbers by using the 
+<TT>gaussian-gcd</TT> algorithm given above to reduce the numerator and 
+denominator to lowest terms. We must also canonicalize the denominator to the 
+region of the positive real axis and the first quadrant by multiplying by 
+<I>i</I>, except when the gcd is real. We note that <TT>gaussian-numerator</TT> 
+and <TT>gaussian-denominator</TT> are not trivial functions--e.g.,
+<P><TT>(gaussian-numerator (complex 3/25 -4/25)) = 1</TT> and
+<P><TT>(gaussian-denominator (complex 3/25 -4/25)) = (complex 3 4)</TT>. <TT><PRE>(defun gaussian-numerator (z)
+  ;;; Should used defmethod on "numerator", instead.
+  (let* ((x (realpart z)) (y (imagpart z))
+         (xd (denominator x)) (yd (denominator y))
+         (zn (complex (* (numerator x) yd) (* (numerator y) xd)))
+         (zd (* xd yd)) (g (gaussian-gcd zn zd)) (r (/ zn g)))
+    (if (zerop (imagpart g)) r (* (complex 0 1) r))))
+
+(defun gaussian-denominator (z)
+  ;;; Should use defmethod on "denominator", instead.
+  (let* ((x (realpart z)) (y (imagpart z))
+         (xd (denominator x)) (yd (denominator y))
+         (zn (complex (* (numerator x) yd) (* (numerator y) xd)))
+         (zd (* xd yd)) (g (gaussian-gcd zn zd)) (r (/ zd g)))
+    (if (zerop (imagpart g)) r (* (complex 0 1) r))))
+</PRE></TT>
+<H2>I. APPLICATION: GAUSSIAN PRIMES</H2>In the section above on the properties 
+of the Gaussian integers, we indicated that ordinary primes of the form |p|=4k+1 
+can be factored in the Gaussian integers as 
+p=(m+n<I>i</I>)*(m-n<I>i</I>)=(n+m<I>i</I>)*(n-m<I>i</I>), but we did not 
+provide a method for finding the integers m,n. We now show one method for 
+finding m,n.
+<P>Wilson's Theorem tells us that (p-1)! = -1 (mod p),<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn14">[14]</A> and if 
+p=4k+1 then ((2k)!)^2 = -1 (mod p),<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn15">[15]</A> so we 
+have an explicit solution h = mod((2k)!,p)<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn16">[16]</A> to the 
+equation h^2 = -1 (mod p). Since h^2+1=(h+<I>i</I>)*(h-<I>i</I>)=t*p, for some 
+integer t&lt;p, there must be a non-trivial factor m+n<I>i</I> in common between 
+h+<I>i</I> and p, and yet this factor cannot be p itself, because t*p&lt;p^2. 
+Therefore, gcd(h+<I>i</I>,p)=m+n<I>i</I> is one of the prime factors of p that 
+we seek [Knuth81,3.3.4#11].<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn17">[17]</A> The other 
+factor is m-n<I>i</I>, and any other factorization of p is produced by including 
+unit factors of the forms +-1 and +-<I>i</I>.
+<P>For example, take the prime 53=4*13+1. Now 23^2 = -1 (mod 53), or 
+equivalently, 23^2+1 = 10*53, so t=10=2*5 (any odd prime factor q of t with 
+exponent 1 must also be of the form 4k+1, otherwise we have produced a square 
+root of -1 (mod q), which is impossible for primes not of the form 4k+1). 
+Computing the gcd of 23+<I>i</I> and 53, we get 2+7<I>i</I>, so m= +-2, n= +-7 
+for p=53. 
+<H2>J. APPLICATION: "GAUSSIAN GRAPHICS"</H2>The usual examples of abstract data 
+types place great significance on the <I>differences</I> between treating pairs 
+of real numbers as Cartesian coordinates and treating pairs of real numbers as 
+complex numbers. We believe that this approach obscures the real beauty and 
+power of the complex numbers interpreted as coordinates of the complex plane.
+<P>Most graphics texts--e.g., [Newman79]--treat the 2-D pixel plane in terms of 
+real vectors rather than complex numbers. While this vector algebra 
+approach--first popularized by Gibbs--extends easily to 3 (and higher) 
+dimensions, it ignores the profoundly different characters of 2-D and 3-D 
+spaces. For example, polynomial equations of even degree with real coefficients 
+may not have any real roots, while such equations of odd degree always have at 
+least one real root; this simple difference means that nontrivial rotations of a 
+"sphere" in 2-D have no fixed points at all, while nontrivial rotations of a 
+sphere in 3-D always have a fixed pole. Physicists and electrical engineers know 
+that the wave equation preserves impulses (Huyghen's principle) only for 
+<I>odd</I>-dimensional spaces--e.g., the wave equation in 2-D has an infinite 
+impulse response, whereas in 3-D it obeys Huyghen's principle [Courant62]. 
+Therefore, when working in 2-D, one should take advantage of the special 
+characteristics of 2-D and utilize the most powerful representation 
+possible--i.e., the complex number--without worrying about whether it extends to 
+higher dimensions.<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn18">[18]</A> For 
+example, the additional algebraic structure of the complex multiplicative 
+inverse gives us the Möbius transforms (A*z+B)/(C*z+d), where A,B,C,D are 
+complex constants, which provide us with elegant uniform representations for 
+lines and circles in the complex plane [Schwerdtfeger62]. This algebraic 
+structure also gives us a complex "interval arithmetic" in which the "intervals" 
+are small circular disks [Gargantini72]. 
+<H3>2-D Image Representation</H3>The Gaussian integers are the 
+<I>coordinates</I> of individual graphical pixels, and the <TT>round</TT> 
+function extended to the complex numbers computes the center of the square<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn19">[19]</A> pixel in 
+which a point falls. This property is the major reason for preferring 
+<I>square</I> sets of representative remainders from a complex Euclidean 
+division operation.
+<P>An interesting coordinate transformation for such a 2-D image is the 
+<I>log-polar</I> transform, which takes the pixel at x+y<I>i</I> and maps it to 
+the position log(x+y<I>i</I>) = log|x^2+y^2|+<I>i</I> atan(y/x). After such a 
+"texture-mapping" operation, the image can be size- and rotation-normalized by 
+simple translation operations, making image recognition easier. 
+<H3>Contour Representation</H3>The simplest description of a set of pixels which 
+forms a connected contour in the plane is a <I>chain code</I>, which gives a 
+sequence of steps from one pixel to the next. The typical chain code utilizes 
+the 8 directions +-1, +-<I>i</I>, +-1+-<I>i</I>, which can therefore be 
+represented as a sequence of 3-bit codes.
+<P>Another elegant way to represent a closed contour on the complex plane 
+(whether it interseects itself or not) is by means of <I>Fourier descriptors</I> 
+[Pavlidis77]. If the contour is approximated by means of a list of points 
+x+y<I>i</I> which are (approximately) equally spaced in terms of path length, 
+then a <I>one</I>-dimensional Fourier transform of that list provides an 
+equivalent representation, which can be less sensitive to rotation and scaling. 
+Contour shapes can be approximated by keeping only the coefficients for the 
+lower frequencies--e.g., 15 harmonics are sufficient to preserve recognizable 
+shapes for the digits 0-5 [Brill68]. For simple shapes in which the entire 
+boundary is "visible" from the origin--i.e., the boundary is a single-valued 
+function in polar coordinates--the boundary points for the Fourier transform can 
+be chosen at equal angles around the origin.
+<P>As an example of a very simple shape, a <I>circle </I>can be represented by 
+the parameterization C0+R*exp(<I>i</I>*2*<I>pi</I>*t), where C0 is the center of 
+the circle, and R is a real number radius--i.e., circles can be represented by 
+only 2 harmonics. 
+<H3>Raster Scanning</H3>The Gaussian integers modulo a particular Gaussian 
+integer form a tilted square array of pixels centered approximately at the 
+origin when the <TT>round</TT> function is used to compute the remainders.<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn20">[20]</A> (This 
+square can also be thought of as a torus, with the top edge connected to the 
+bottom, and the left edge connected to the right.) If the modulus is a Gaussian 
+prime of the form m+n<I>i</I>, m/=0, n/=0, then the rational integers Z, taken 
+modulo m+n<I>i</I>, will explore this tilted square array of 
+|m+n<I>i</I>|^2=norm(m+n<I>i</I>) pixels centered at the origin. This 
+exploration is complete, because every rational or Gaussian integer whose norm 
+is less than norm(m+n<I>i</I>) is relatively prime to m+n<I>i</I>, as 
+m+n<I>i</I> is a Gaussian prime.<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn21">[21]</A> If n=1, 
+then Z (mod m+<I>i</I>) will explore a slightly tilted square in a 
+non-interlaced, horizontal, <I>raster</I> pattern!
+<P>Consider, for example, the Gaussian prime 10+<I>i</I> whose norm is 101. In 
+order to demonstrate a raster scan, we will define the <TT>modulo</TT> function 
+to be used for computing (mod 10+<I>i</I>) as follows: <TT><PRE>(defun modulo (z d)
+  ;;; Modulo function for doing raster scans.
+  ;;; This modulo function won't work for computing gcd's.
+  (- z (* d (complex-floor z d))))
+</PRE></TT>The above <TT>modulo</TT> function does <I>not</I> produce a result 
+whose norm is smaller than the divisor, but it does "tile the plane". Each of 
+these tiles, when considered as a pattern of discrete pixels, forms an L-shaped 
+tile consisting of a 10x10 square above a 1x1 square, as might be expected from 
+the fact that 101=10^2+1^2. This familiar tiling pattern repeats on an angle of 
+atan(1/10).<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn22">[22]</A>
+<P>If we now compute 0 (mod 10+<I>i</I>), 1 (mod 10+<I>i</I>), 2 (mod 
+10+<I>i</I>), 3 (mod 10+<I>i</I>), ..., 100 (mod 10+<I>i</I>), then we get the 
+following "inverse table", where the number at position x+y<I>i</I> indicates 
+the integer 0-100 that maps to x+y<I>i</I>.
+<P><TT><PRE>10i |  1    2    3    4    5    6    7    8    9   10   
+ 9i | 11   12   13   14   15   16   17   18   19   20   
+ 8i | 21   22   23   24   25   26   27   28   29   30   
+ 7i | 31   32   33   34   35   36   37   38   39   40   
+ 6i | 41   42   43   44   45   46   47   48   49   50   
+ 5i | 51   52   53   54   55   56   57   58   59   60   
+ 4i | 61   62   63   64   65   66   67   68   69   70   
+ 3i | 71   72   73   74   75   76   77   78   79   80   
+ 2i | 81   82   83   84   85   86   87   88   89   90   
+ 1i | 91   92   93   94   95   96   97   98   99  100  
+ 0i |  0                                             
+    -------------------------------------------------
+       0    1    2    3    4    5    6    7    8    9    
+</PRE></TT>Table of n (mod 10+<I>i</I>), for n = 0 (1) 100, showing raster scan 
+pattern.
+<P>If we start counting with 1, then our raster scan will start at the top left 
+corner (0+10<I>i</I>) and sweep out successive rows of pixels on our Gaussian 
+screen whose upper left hand corner is 0+10<I>i</I> and whose lower right hand 
+corner is 9+<I>i</I>. The number 101 maps to the same pixel as the number 
+0--i.e., the pixel 0+0<I>i</I>, which acts as a kind of "vertical retrace" 
+pixel. Even more interestingly, we can do a <I>vertical</I> raster scan by using 
+the series 0<I>i</I>, 1<I>i</I>, 2<I>i</I>, 3<I>i</I>, ..., etc. (mod 
+10+<I>i</I>)--i.e., the series Z<I>i</I>. In fact, we can produce almost any 
+conceivable scan of this "square" by considering the series Z*k, for any 
+Gaussian integer k, and scans without a "retrace pixel" can be made by 
+considering the <I>powers</I> of primitive elements (see [Brenner73] and <A 
+href="http://linux.rice.edu/~rahul/hbaker/APLPerms.html">[Baker74]</A> ).
+<P>Gaussian primes of the form m+<I>i</I> appear to be moderately common--e.g., 
+there are about 50 whose norms are less than 100,000. Particularly interesting 
+are the Gaussian factors of <I>Fermat primes</I> of the form 2^(2^n)+1. For 
+example, the Fermat prime 65,537 splits into Gaussian factors 256+-<I>i</I>, 
+which gives us a 256x256 Gaussian graphics screen. Unfortunately, there may be 
+only 5 Fermat primes, of which 65,537 is the largest known, and it is 
+conjectured that these 5 are all that exist [Hardy79]. It is not known if there 
+are more than a finite number of primes of the form m^2+1 [Hardy79], 
+although--unlike Fermat primes--these primes are empirically rather easy to 
+find.
+<P>For example, each of the following integers m produces a prime p=m^2+1.
+<P>2, 4, 6, 10, 14, 16, 20, 24, 26, 36, 40, 54, 56, 66, 74, 84, 90, 94, 110, 
+116, 120, 124, 126, 130, 134, 146, 150, 156, 160, 170, 176, 180, 184, 204, 206, 
+210, 224, 230, 236, 240, 250, 256, 260, 264, 270, 280, 284, 300, 306, 314, 326, 
+340, 350, 384, 386, 396, 400, 406, 420, 430, 436, 440, 444, 464, 466, 470, 474, 
+490, 496, 536, 544, 556, 570, 576, 584, 594, 634, 636, 644, 646, 654, 674, 680, 
+686, 690, 696, 700, 704, 714, 716, 740, 750, 760, 764, 780, 784, 816, 826, 860, 
+864, 890, 906, 910, 920, 930, 936, 946, 950, 960, 966, 986, 1004, 1010, 1036, 
+1054, 1060, 1066, 1070, 1080, 1094, 1096. 
+<H3>Affine Transformations</H3>The standard graphics textbooks utilize 
+homogeneous coordinates to implement affine transformations in the plane 
+[Newman79] [Pavlidis82]. Homogeneous coordinates come from projective geometry 
+which shows that translations can be seen in projective space as rotations 
+around a point at infinity, and therefore both rotations and translations can be 
+handled by the same (cumbersome and inefficient) mechanism.
+<P><TT><PRE>[ a b e ]   [x]   [ a*x+b*y+e ]
+[ c d f ] * [y] = [ c*x+d*y+f ]
+[ 0 0 1 ]   [1]   [     1     ]
+</PRE></TT>Affine transformations in the complex plane can also be accomplished 
+by means of complex arithmetic:
+<P>affine(z) = A*z + B*z^* + C, where A, B, C are complex constants and z^* = 
+conjugate(z).
+<P>This general form is preserved when composing affine transformations, as can 
+be readily checked with simple algebra. That this general form can accomplish 
+any affine transformation can be seen by converting the homogeneous matrix form 
+of affine transformation into the complex form. If a,b,c,d,e,f are the 
+parameters of the transformation matrix, as above, then we can express the 
+complex constants A,B,C in terms of a,b,c,d,e,f:
+<P>A = ((a+d)-(b-c)<I>i</I>)/2, B=((a-d)+(b+c)<I>i</I>)/2, C=e+f<I>i</I>
+<P>Unlike the case with homogeneous matrices, the complex form of an affine 
+transformation is particularly perspicuous when it comes to <I>rotations</I>. If 
+we have a transformation which is just a <I>proper</I> rotation (i.e., without a 
+flip), then A=exp(<I>i</I>*theta), where theta is the angle of rotation, and 
+B=C=0. If we have an <I>improper</I> transformation which involves a flip, then 
+B=exp(<I>i</I>*theta), where theta is the angle of rotation, and A=C=0. Thus, 
+for proper Euclidean transformations, |A|=1 and B=0. 
+<H3>Complex CORDIC Rotations</H3>The Gaussian integers 2^k +- <I>i</I> offer an 
+elegant and efficient way to rotate on a binary computer. We can represent any 
+rotation angle theta in the range [-90deg.,90deg.] in a mixed-radix positional 
+number system [Knuth81] in which the digits d[k] are +-1 and the weights a[k] 
+are atan(2^(-k)) [Volder59]--i.e.,
+<P>theta = sum(k=0,infinity,d[k]*a[k]) = sum(k=0,infinity,d[k]*atan(2^(-k))).
+<P>Equivalently, we can express a rotation exp(<I>i</I>*theta) as an infinite 
+product of complex factors--i.e.,
+<P>exp(<I>i</I>*theta) 
+=<BR>sum(k=0,infinity,((2^k+<I>i</I>)^d[k])/abs((2^k+<I>i</I>)^d[k])) 
+=<BR>sum(k=0,infinity,(2^k+d[k]*<I>i</I>)/sqrt(2^(2k)+1))) =<BR>1/K * 
+sum(k=0,infinity,(1+d[k]*2^(-k)*<I>i</I>)),
+<P>where the factor K = sqrt(product(k=0,infinity,(1+2^(-2k)))) ~ 1.64676
+<P>is a normalization constant<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn23">[23]</A> 
+independent of theta. Therefore, any rotation can be factored into a series of 
+additions and shifts (followed by a single normalization) in a manner 
+reminiscent of the decomposition of normal multiplication into additions and 
+shifts. The binary digits d[k] = +-1 are found by a binary search of a virtual 
+table of arctangents of powers of 2. Only 1 bit needs to be stored for each 
+factor in the product, thus providing a compact code for rotations. 
+<H3>Halftoning</H3><I>Halftoning</I> is a standard technique for trading spatial 
+resolution of a 2-D display for grey-scale resolution. Traditional halftoning 
+algorithms coalesce a fixed number of binary pixels together to display one 
+grey-scale pixel. Gaussian integers provide an elegant way to do halftoning with 
+square groups (!) of binary pixels. If <I>l</I>+1 levels of grey must be 
+represented, then <I>l</I> binary pixels are required within each group; 
+<I>j</I> of them will be turned on to achieve a brightness level of 
+<I>j/l.</I><A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn24">[24]</A> If 
+<I>l</I> is representable as a sum of 2 squares--i.e., <I>l</I>=m^2+n^2--and 
+gcd(m,n)=1, then the Gaussian integers (mod m+n<I>i</I>) will form a tilted 
+square which tiles the plane and can be used as the "unit cell" for halftoning. 
+Furthermore, the set of integers [0,<I>l</I>) has a 1-1 mapping onto the tilted 
+square (as we have shown <A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#figure">above</A> for 
+3+2<I>i</I>), and can therefore also act as a basic repeat pattern which lies 
+within a single scan line [Holladay80]. Interestingly, Gaussian halftones<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn25">[25]</A> can be 
+done only if <I>l</I> has no prime factors |p|=4k+3 which have odd exponents; 
+this makes it difficult to provide a number of grey levels which is exactly a 
+power of two. 
+<H3>Raster Frame Buffer Memory Design<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn26">[26]</A></H3>The 
+design of memory systems for high performance computers has already benefitted 
+from number theory. The Burroughts Scientific Processor utilized a Fermat prime 
+(2^4+1=17) number of memory banks to minimize memory contention in vector 
+operations [Kuck78].
+<P>It should be no surprise, then, that the design of raster graphics 2-D frame 
+buffers can benefit from the properties of the Gaussian integers. Modern 2-D 
+frame buffers must be designed in such a way that groups of adjacent pixels in a 
+single scan line can be accessed from the frame buffer in a single memory cycle 
+to refresh the display, which implies that each pixel in the group must be 
+stored in a separate memory chip. However, most graphics algorithms access the 
+frame buffer in patterns which have locality in <I>two</I> dimensions, which 
+implies that each pixel in a small 2-D neighborhood should be stored in a 
+separate memory chip. Both of these properties are elegantly satisfied by using 
+a Gaussian modulo function for the mapping of 2-D coordinates to memory 
+chips--e.g., chip#(x,y) = mod(x+y<I>i</I>,m+n<I>i</I>), where m,n are rational 
+integer constants, and gcd(m,n)=1. For example, if m+n<I>i</I>=3+2<I>i</I>, then 
+3^2+2^2=13 memory chips are required, and the two access patterns are shown in 
+the figure of section E, <A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#figure">above</A> 
+Furthermore, access to <I>any</I> square of the fundamental size and 
+orientation--regardless of its translation--can be performed in a single memory 
+cycle, and these pixels can then be permuted to standard positions using a 
+cyclic <I>barrel shifter</I>. In the above example, consider accessing the 
+tilted square whose bottom corner is located at 1+2<I>i</I>. Then the 
+fundamental slice is cyclically shifted left by 1+2<I>i</I>=1+2*5=11, since 
+<I>i</I>=5 (mod 3+2<I>i</I>).
+<P>Gaussian integer constants of the form 2^k+<I>i</I> are particularly 
+appropriate for such memory systems. These moduli involve computing 
+mod(x,2^(2k)+1), which can be done by the binary equivalent of "casting out 
+elevens"--i.e., trivially express x in base-2^(2k) notation, and then 
+alternately add and subtract each big digit. This procedure works because 
+(2^(2k))^j = (-1)^j = +-1 (mod 2^(2k)+1).
+<P>[Chor86] effectively suggests the use of Fibonacci Gaussian integer constants 
+F[k]+<I>i</I>F[k+1] for raster graphics memory systems, because Fibonacci 
+systems provide interference-free access to rectangles of the largest area.
+<P>Memory <I>cache designs</I> can be optimized for 2-D access by means of these 
+mapping techniques. Even with no special hardware, software mappings of this 
+kind can optimize existing caches. Cache "lines" then become cache "squares"! 
+<H3>Pythagorean Chip Dip</H3>Consider integrated circuit chips with two 
+different layers, both of which utilize square meshes of lines. If the ratio of 
+the areas of these squares is m^2+n^2, gcd(m,n)=1, and the layers are deposited 
+with an angle of atan(n/m), then the larger squares will look like the picture 
+in section E.<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn27">[27]</A> If the 
+lines of the larger squares are "reflective", then one can conceive of utilizing 
+the "space-filling" nature of the internal reflections to address the internal 
+intersection points. These internal intersection points can be consider on a 
+kind of time-multiplexed "ring-bus". The internal intersections could either be 
+amplifiers to create a kind of folded-up laser, or could be taps in a folded-up 
+filter. The addressibility feature could also be used as a kind of switching 
+network, and if m^2+n^2 is quite large, then a Pythagorean chip could be used as 
+the basis for a flat-panel display of pixels. More than two layers with distinct 
+pitches and angles can also be envisioned. 
+<H2>K. CONCLUSIONS</H2>We have shown how the numeric functions of modern 
+computer languages can be extended to deal correctly with Gaussian integers. 
+Since these extensions are so simple, once the basic datatypes have been 
+implemented, it makes sense to include these capabilities in any standard for 
+complex numbers in computer languages.
+<P>We prefer the use of tilted <I>squares</I> for representing the remainders of 
+complex division, rather than the rectangles of APL. Square residue sets seem to 
+offer the most elegant utilization of the two real parameters (real and 
+imaginary parts) implicit in a complex divisor--as defining the size and 
+orientation of the square. Different division functions are useful in different 
+contexts, however, so we recommend that a multiplicity of division functions be 
+provided.<A 
+href="http://linux.rice.edu/~rahul/hbaker/Gaussian.html#fn28">[28]</A>
+<P>If one prefers <I>hexagonal</I> pixels to square pixels, this paper can be 
+rewritten to uniformly utilize the ring Z[<I>w</I>]=Z+Z*<I>w</I> instead of the 
+Gaussian ring Z[<I>i</I>], where <I>w</I> is a primitive root of unity--i.e., 
+<I>w</I>^6=1 (where <I>w</I> = (1+-sqrt(3)<I>i</I>)/2) instead of <I>i</I>^4=1. 
+The Euclidean gcd algorithm works in this ring with 
+norm(m+n<I>w</I>)=m^2+m*n+n^2. The basic lattice is equilateral triangular, and 
+the remainders can be made to tile the plane with <I>hexagons</I> [Hardy79]. 
+Such a tiling is ideal for the RGB triads of a color television, because the 
+lattice points (pixels) then fall into exactly <I>three</I> classes-- = 0, +1, 
+-1 (mod (2<I>w</I>-1)=sqrt(3)<I>i</I>). 
+<H2>L. REFERENCES</H2>Altmann, S.L. <I>Rotations, Quaternions, and Double 
+Groups</I>. Clarendon Press, Oxford, 1986.
+<P><A href="http://linux.rice.edu/~rahul/hbaker/APLPerms.html">[Baker74]</A> 
+Baker, H.G. "On the Permutations of a Vector Obtainable through the Restructure 
+and Transpose Operators of APL". 1974, published recently in <I>APL Quote Quad 
+23</I>,2 (Dec. 1992), 27-31.
+<P><A href="http://linux.rice.edu/~rahul/hbaker/AB-mod-N.html">[Baker92]</A> 
+Baker, H.G. "Computing A*B (mod N) Efficiently in ANSI C". <I>Sigplan Not. 
+27</I>,1 (Jan. 1992), 95-98.
+<P>Beeler, M., <I>et al</I>. "HAKMEM". MIT AI Memo 239, Feb. 29, 1972. See items 
+#107,136-138.
+<P>Bracewell, R.N. <I>The Fourier Transform and Its Applications, 2nd. Ed</I>. 
+McGraw-Hill, NY 1986.
+<P>Brenner, N. "Algorithm 467: Matrix transpose in place". <I>CACM 16</I>,11 
+(1973), 692-694.
+<P>Brill, E.L. "Character Recognition via Fourier Descriptors". <I>Proc. 
+WESCON</I> Paper 25/3, Los Angeles, 1968.
+<P>Chor, B., <I>et al</I>. "An Application of Number Theory to the Organization 
+of Raster-Graphics Memory". <I>JACM 33</I>,1 (Jan. 1986), 86-104.
+<P>Courant, R., and Hilbert, D. <I>Methods of Mathematical Physics, Vol. II</I>. 
+Wiley &amp; Sons, New York, 1962.
+<P>Davenport, H. <I>The Higher Arithmetic: An Introduction to the Theory of 
+Numbers, 6th Ed</I>. Camb. U. Press, 1992.
+<P>Diaz, B.M., and Bell, S.B.M., <I>eds</I>. <I>Spatial Data Processing using 
+Tesseral Methods</I>. Nat. Envir. Res. Council, Swindon, 1986.
+<P>Duprat, J., <I>et al</I>. "New Redundant Representations of Complex Numbers 
+and Vectors". <I>IEEE Trans. Computers 42</I>,7 (July 1993), 817-824.
+<P>Eggleton, R.B., <I>et al</I>. "Euclidean Quadratic Fields". <I>AMM 99</I>,9 
+(Nov. 1992), 829-837.
+<P>Forkes, D. "Complex Floor Revisited". <I>APL'81</I>, ACM <I>APL Quote Quad 
+12</I>,1 (Sept. 1981), 107-111.
+<P>Gargantini, I., &amp; Henrici, P. "Circular Arithmetic and the Determination 
+of Polynomial Zeros". <I>Numer. Math 18</I> (1972), 305-320.
+<P>Goffinet, D. "Number Systems with a Complex Base: a Fractal Tool for Teaching 
+Topology". <I>AMM 98</I>,3 (Mar. 1991), 249-255.
+<P>Grünbaum, B., and Shepard, G.C. <I>Tilings and Patterns</I>. W.H.Freeman 
+&amp; Co., New York, 1987.
+<P>Hardy, G.H., and Wright, E.M. <I>An Introduction to the Theory of Numbers, 
+5th Ed</I>. Clarendon Press, Oxford, 1979.
+<P>Harmon, C.J. "Complex Fibonacci Numbers". <I>Fibonacci Quart. 19</I>,1 (Feb. 
+1981), 82-86.
+<P>Hodgson, G.S. "Rationale for the Proposed Standard for Packages of Real and 
+Complex Type Declarations and Basic Operations for Ada". ACM <I>Ada Letters 
+XI</I>, 7 (Fall 1991), 131-139.
+<P>Holladay, T.M. "An Optimum Algorithm for Halftone Generation for Displays and 
+Hard Copies". <I>Proc. Soc. Info. Disp. 21</I>,2 (1980), 185-192.
+<P>Hurwitz, A. "Uber die Entwicklung Complexer Grossen in Kettenbruche". <I>Acta 
+Math. 11</I> (1888).
+<P>Knuth, D.E. <I>The Art of Computer Programming, Vol. 2: Seminumerical 
+Algorithms, 2nd Ed</I>. Addison-Wesley 1981.
+<P>Kota, K., and Cavallaro, J.R. "Numerical Accuracy and Hardware Tradeoffs for 
+CORDIC Arithmetic for Special-Purpose Processors". <I>IEEE Trans. Computers 
+42</I>,7 (July 1993), 769-779.
+<P>Kuck, D.J. <I>The Structure of Computers and Computations, Vol. I</I>. John 
+Wiley &amp; Sons, New York, 1978.
+<P>Lang, Serge. <I>Algebra</I>. Addison-Wesley, Reading, MA 1970.
+<P>McDonnell, E.E. "Complex Floor". <I>Proc. APL Congress 73</I>, North-Holland, 
+Amsterdam, 1973.
+<P>McIlroy, M.D. "Best Approximate Circles on Integer Grids". ACM <I>Trans. 
+Graphics 2</I>,4 (Oct. 1983), 237-263.
+<P>Middleditch, A.E. "Intersection Algorithms for Lines and Circles". ACM 
+<I>Trans. Graphics 8</I>,1 (Jan. 1989), 25-40.
+<P>Newman, W.M., and Sproull, R.F. <I>Principles of Interactive Computer 
+Graphics</I>. McGraw-Hill, New York, 1979.
+<P>Ore, Oystein. <I>Number Theory and its History</I>. McGraw-Hill, New York, 
+1948.
+<P>Pavlidis, T. <I>Structural Pattern Recognition</I>. Springer-Verlag, Berlin 
+1977.
+<P>Pavlidis, Theo. <I>Algorithms for Graphics and Image Processing</I>. Computer 
+Science Press, Rockville, MD, 1982.
+<P>Pavlidis, T. "Curve Fitting with Conic Splines". ACM <I>Trans. Graphics 
+2</I>,1 (Jan. 1983), 1-31.
+<P>Penfield, P. "Principle Values and Branch Cuts in APL". <I>Proc. APL81, APL 
+Quote Quad 12</I>,1 (Sept. 1981).
+<P>Penney, W. "A 'Binary' System for Complex Numbers". <I>JACM 12</I>,2 (Apr. 
+1965), 247-248.
+<P>Rokne, J.G., <I>et al</I>. "Fast Line Scan-Conversion". ACM <I>Trans. 
+Graphics 9</I>,4 (Oct. 1990), 376-388.
+<P>Samet, H. "Hierarchical Representations of Collections of Small Rectangles". 
+ACM <I>Comput. Surv. 20</I>,4 (Dec. 1988),271-309.
+<P>Schwerdtfeger, Hans. <I>Geometry of Complex Numbers: Circle Geometry, Moebius 
+Transformation, Non-Euclidean Geometry</I>. Dover Publs., New York, 1962.
+<P>Shallit, J.O. <I>Integer Functions and Continued Fractions</I>. Princeton 
+Univ., 1979.
+<P><A 
+href="http://www.cs.cmu.edu:8001/Web/Groups/AI/html/cltl/cltl2.html">[Steele90]</A> 
+Steele, Guy L. <I>Common Lisp, the Language, 2nd Ed</I>. Digital Press, Bedford, 
+MA, 1990, 1029p.
+<P>Stein, S.K. "Algebraic Tiling". <I>Amer. Math. Monthly 81</I> (1974), 
+445-462.
+<P>Turkowski, K. "Anti-Aliasing through the Use of Coordinate Transformations". 
+ACM <I>Trans Graph 1</I>,3 (1982), 215.
+<P>Volder, J.E. "The CORDIC Trigonometric Computing Technique". <I>IRE Trans. 
+Elect. Comps. EC-8</I> (Sept. 1959).
+<P>Wagon, S. "The Euclidean Algorithm Strikes Again". <I>AMM 97</I>,2 (Feb. 
+1990), 125-129.
+<P>Wall, H.S. <I>Analytic Theory of Continued Fractions</I>. Chelsea Publ. Co., 
+NY, 1948, 1973.
+<P><A name=fn1>[1]</A> As attractive as they are, Mandelbrot pictures are not 
+the only use for complex numbers--e.g., trigonometry without complex numbers 
+gives me a severe case of <I>sinus</I>itis (<I>sinus</I> is German for 
+<I>sine</I>).
+<P><A name=fn2>[2]</A> An <I>ideal</I> is a subset I of a ring R which is closed 
+under subtraction (I-I=I) and multiplication by arbitrary elements of the parent 
+ring (R*I=I). In a principal ideal domain D, every ideal I can be represented as 
+the set of multiples of a single generator element g--i.e., I=D*g. Every ideal 
+of Z[<I>i</I>] is a magnified and tilted version of the square lattice 
+Z[<I>i</I>].
+<P><A name=fn3>[3]</A> Clearly, any number of units can be introduced into a 
+factorization.
+<P><A name=fn4>[4]</A> We <I>strongly</I> recommend against extending the 
+relational operations--e.g., &lt;,&gt;,&lt;=,&gt;=--to the complex numbers by 
+means of comparing absolute values or norms, as has been proposed by some in the 
+Lisp and C++ communities. This is because these relational operators would then 
+become <I>discontinuous</I> functions across the negative real axis.
+<P><A name=fn5>[5]</A> This choice of representatives is different from that in 
+[McDonnell73] and [Forkes81], for reasons given below. The edges of these 
+squares would make Bresenham [Newman79] proud.
+<P><A name=fn6>[6]</A> The multiplication of both the dividend and the divisor 
+by a normalization factor (in this case d^*) is reminiscent of Knuth's Algorithm 
+D [Knuth81,4.3.1].
+<P><A name=fn7>[7]</A> The set of remainders of a complex division by a divisor 
+d need not be convex or even connected--e.g., <I>any</I> set S of complex 
+numbers which represents every domain point (D=d*D+S), will work as a set of 
+remainders [Goffinet90].
+<P><A name=fn8>[8]</A> Each (mod d) tile has area norm(d). However, the 
+individual tiles may have non-convex <I>fractal</I> shapes such as the 
+"twindragon" curves produced by bit strings interpreted as numbers of base 
+<I>i</I>-1 [Knuth81,4.1]. Note that Common Lisp's <TT>round</TT> and 
+<TT>truncate</TT> do not produce unique remainders, and therefore do not tile 
+the plane. To tile the plane with <I>hexagons</I> instead of squares, utilize 
+the ring Z[<I>w</I>]=Z+Z*<I>w</I> instead of Z[<I>i</I>], where <I>w</I>^3=-1 
+[Hardy79]. Square tiles can include only 2 edges and 1 corner; hexagonal tiles 
+can include only 3 edges and 2 corners [Grünbaum87].
+<P><A name=fn9>[9]</A> <I>Voronoi</I> regions around the lattice points give the 
+tiles with the least remainders; in Z[<I>i</I>], these regions are squares.
+<P><A name=fn10>[10]</A> [McDonnell73]'s complex <TT>floor</TT> function fails 
+this criterion because its remainders form rectangles, not squares.
+<P><A name=fn11>[11]</A> <TT>ceiling</TT> can be used to encode base <I>i</I>-1 
+numbers whose digits are the bits 0,1. However, <I>quater-imaginary</I> numbers 
+(base 2<I>i</I>) can't be handled by the usual APL-style <I>encode</I> function, 
+since it produces <I>imaginary</I> digits--e.g., 1+<I>i</I>. <I>Quadtrees</I> 
+[Samet88] are equivalent to base-2 numbers with the digits 0, 1, <I>i</I>, 
+1+<I>i</I>, which are gotten by interlacing the binary digits of the real and 
+imaginary parts of a Gaussian integer.
+<P><A name=fn12>[12]</A> [Hurwitz88] suggests a complex round-like function 
+based on the real function divide(x,d)=floor(x+d/2,d), which minimizes the size 
+of remainders, but--unlike Common Lisp's <TT>round</TT>--produces unique 
+representative remainders.
+<P><A name=fn13>[13]</A> Adding +-1+-<I>i</I> preserves parity, proving that 
+chess bishops retain parity. Similarly, the fact that 2+<I>i</I> and 2-<I>i</I> 
+are distinct primes, and hence gcd(2+<I>i</I>,2-<I>i</I>)=1, proves that chess 
+knights can get to every square on an infinite chessboard.
+<P><A name=fn14>[14]</A> Proof: take the numbers 1,2,...,p-1 in pairs x,y, x/=y, 
+such that x*y=1 (mod p). The only numbers left over will be 1 and -1, so the 
+entire product will be = -1 (mod p).
+<P><A name=fn15>[15]</A> Proof: take the numbers 1,2,...,p-1 in pairs x, p-x, 
+such that x*(p-x) = -x^2 (mod p). Since p=4k+1, there are an even number (2k) of 
+such pairs, so we can rearrange the product of all of them as ((2k)!)^2. But 
+this is the same product as in Wilson's theorem, which we have already shown to 
+be = -1 (mod p).
+<P>Since squaring (mod p) is easier than computing factorials (mod p), we can 
+more quickly find a quadratic non-residue c, such that c^(2k)=(c^k)^2=-1 (mod 
+p), and thus h=c^k (mod p) [Wagon90].
+<P><A name=fn16>[16]</A> <I>Don't</I> compute the factorial before reducing mod 
+p; <I>do</I> reduce mod p for every product <A 
+href="http://linux.rice.edu/~rahul/hbaker/AB-mod-N.html">[Baker92]; 
+</A><I>do</I> use x-p if x&gt;=p/2.
+<P><A name=fn17>[17]</A> Gauss gave explicit formulae for m,n: m = 
+((2k)!)/(2(k!)^2) (mod p) and n = (2k)!*m (mod p), where the m,n have the 
+smallest absolute values [Davenport92]. This method for finding m,n is not at 
+all obvious or as easy to remember as the gcd method.
+<P>Legendre used the continued fraction expansion (with a possibly long cycle) 
+of sqrt(p) to produce m,n [Davenport92].
+<P>[Wagon90] shows that the gcd algorithm applied to the rational integers p,h 
+produce m,n as the first two remainders less than sqrt(p). His method produces 
+exactly the same intermediate results as the Gaussian gcd method, however.
+<P><A name=fn18>[18]</A> Hamilton's <I>quaternions</I> are elegant extensions of 
+the complex numbers useful in 3-D and 4-D, but multiplication isn't commutative 
+[Altmann86]. Quaternions are most conveniently manipulated as pairs of complex 
+numbers.
+<P><A name=fn19>[19]</A> Gaussian graphical algorithms work best with 
+<I>square</I> pixels, but then so do most graphics algorithms.
+<P><A name=fn20>[20]</A> If another division function is used, the shape of this 
+array of pixels may be changed.
+<P><A name=fn21>[21]</A> That this scan of the square "fills the space" of 
+pixels should not be surprising. König's corollary to Kronecker's Theorem 
+[Hardy79] tells us that a reflected ray which makes an angle--whose tangent is 
+irrational--to the side of a square with reflecting sides will densely and 
+uniformly explore the interior of the square. In the present case of a rational 
+tangent n/m, and a square of area m^2+n^2, an initially horizontal ray will be 
+uniformly periodic with only integer-valued horizontal lines. There will also be 
+a ruling of non-horizontal lines at angle 2*atan(n/m), which we conjecture will 
+never intersect the lattice points inside the square. Thus, our fundamental 
+square can be considered to be a "folded-up" version of the horizontal linear 
+strip of height 1 and length m^2+n^2.
+<P><A name=fn22>[22]</A> Rational primes like p=m^2+n^2=norm(m+n<I>i</I>), 
+m&gt;n&gt;1, give rise to tilings with a greater tilt.
+<P><A name=fn23>[23]</A> The product inside the radical is a generating function 
+evaluated at 1/4 for distinct partitions of integers [Hardy79]. W. Gosper can 
+accelerate convergence but is not aware of any simple "closed-form" 
+representation for this constant.
+<P><A name=fn24>[24]</A> We will not discuss a mechanism for choosing the 
+particular pixels to be turned on in each group.
+<P><A name=fn25>[25]</A> Gaussian bells that ring accidentally!
+<P><A name=fn26>[26]</A> These ideas are from [Holladay80] and [Chor86], which 
+could both benefit handsomely from Gaussian integers.
+<P><A name=fn27>[27]</A> We assume that pitches and angles can be tightly 
+controlled during fabrication, but not necessarily registration. However, 
+registration in a Pythagorean chip should not matter very much!
+<P><A name=fn28>[28]</A> To paraphrase Emerson, "foolish consistency is the 
+hobgoblin of little languages". </P></BODY></HTML>

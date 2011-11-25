@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html><head><title>Gaussian Primes</title></head><body>
+	
+	
+		<h1>What are Gaussian Primes?</h1>
+
+		<p>
+		A <i>Gaussian Integer</i> is a complex number <code>a + b<i>i</i></code>,
+		where <code>a</code> and <code>b</code> are both integers. A <i>Gaussian prime</i>
+		is a Gaussian integer, not 0 or a unity, divisible only by numbers associated with itself or 1.
+		</p>
+		
+		<p>
+		Gaussian primes may be fully characterised by the following:
+		<ol>
+			<li><code>1 + i</code> and its associates (<code>-1 + i</code>, <code>-1 - i</code>, <code>1 - i</code>)</li>
+			<li>the rational primes <code>4<i>n</i> + 3</code> and their associates</li>
+			<li>the factors <code>a + b<i>i</i></code> of the rational primes <code>4<i>n</i> + 1</code> </li>
+		</ol>	
+		</p>
+		
+		<p>
+		This characterisation makes it easy to plot the distribution of Gaussian primes. It is sufficient to consider
+		only <code>a + b<i>i</i></code> where <code>a</code> is positive, and <code>b</code> lies between 0 and <code>a</code>.
+		In fact, <code>1 + <i>i</i></code> is the only such prime whose real part and imaginary part are equal.
+		For the rest there are two cases:
+		<ol>
+			<li>If <code>b = 0</code>, <code>a + b<i>i</i></code> is prime if <code>a</code> is prime.</li>
+			<li>If <code>b != 0</code>, <code>a + b<i>i</i></code> is prime if <code>a<sup>2</sup> + b<sup>2</sup></code> is prime.</li>
+		</ol>
+		These cases are easily checked using a list of (rational) prime numbers.
+		</p>
+		
+		<p>
+		My program draws the distribution of Gaussian primes bounded by a prescribed circle in the complex plane. It uses
+		a table of primes generated using the sieve of Eratosthenes. Download the <a href="prime.zip">distribution</a>.
+		</p>
+		
+		<h1>References</h1>
+
+		<p>
+		Conway, John H. and Guy, Richard K. (1996), <b>The Book of Numbers</b>, Springer Verlag.
+		</p>
+
+		<p>
+		Hardy, G. H. and Wright, E. M. (1938), <b>The Theory of Numbers</b>, Oxford University Press, pp218-219.
+		</p>
+
+		<p>
+		Ribenboim, Paulo, (1989), <b>The Book of Prime Number Records</b>, Springer-Verlag.
+		</p>
+
+		<p>
+		Rose, H.E., (1988), <b>A Course in Number Theory</b>, Oxford University Press, p92.
+		</p>
+
+		
+	
+</body></html>

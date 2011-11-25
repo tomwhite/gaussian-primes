@@ -1,0 +1,15 @@
+In the section above on the properties of the Gaussian integers, we indicated that ordinary primes of the form |p|=4k+1 can be factored in the Gaussian integers as p=(m+ni)*(m-ni)=(n+mi)*(n-mi), but we did not provide a method for finding the integers m,n. We now show one method for finding m,n.
+Wilson's Theorem tells us that (p-1)! = -1 (mod p),[14] and if p=4k+1 then ((2k)!)^2 = -1 (mod p),[15] so we have an explicit solution h = mod((2k)!,p)[16] to the equation h^2 = -1 (mod p). Since h^2+1=(h+i)*(h-i)=t*p, for some integer t<p, there must be a non-trivial factor m+ni in common between h+i and p, and yet this factor cannot be p itself, because t*p<p^2. Therefore, gcd(h+i,p)=m+ni is one of the prime factors of p that we seek [Knuth81,3.3.4#11].[17] The other factor is m-ni, and any other factorization of p is produced by including unit factors of the forms +-1 and +-i.
+
+For example, take the prime 53=4*13+1. Now 23^2 = -1 (mod 53), or equivalently, 23^2+1 = 10*53, so t=10=2*5 (any odd prime factor q of t with exponent 1 must also be of the form 4k+1, otherwise we have produced a square root of -1 (mod q), which is impossible for primes not of the form 4k+1). Computing the gcd of 23+i and 53, we get 2+7i, so m= +-2, n= +-7 for p=53. 
+
+[14] Proof: take the numbers 1,2,...,p-1 in pairs x,y, x/=y, such that x*y=1 (mod p). The only numbers left over will be 1 and -1, so the entire product will be = -1 (mod p).
+
+[15] Proof: take the numbers 1,2,...,p-1 in pairs x, p-x, such that x*(p-x) = -x^2 (mod p). Since p=4k+1, there are an even number (2k) of such pairs, so we can rearrange the product of all of them as ((2k)!)^2. But this is the same product as in Wilson's theorem, which we have already shown to be = -1 (mod p).
+Since squaring (mod p) is easier than computing factorials (mod p), we can more quickly find a quadratic non-residue c, such that c^(2k)=(c^k)^2=-1 (mod p), and thus h=c^k (mod p) [Wagon90].
+
+[16] Don't compute the factorial before reducing mod p; do reduce mod p for every product [Baker92]; do use x-p if x>=p/2.
+
+[17] Gauss gave explicit formulae for m,n: m = ((2k)!)/(2(k!)^2) (mod p) and n = (2k)!*m (mod p), where the m,n have the smallest absolute values [Davenport92]. This method for finding m,n is not at all obvious or as easy to remember as the gcd method.
+
+Legendre used the continued fraction expansion (with a possibly long cycle) of sqrt(p) to produce m,n [Davenport92].

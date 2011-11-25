@@ -1,0 +1,117 @@
+Test data
+
+n = 99991 (largest prime below 10000)
+
+r = 17903
+
+r - 1 = 2 * 8951
+
+4 * sqrt(r) * log n = 8889.54911924
+
+2 * sqrt(r) * log n = 4444.77455962
+
+----
+
+http://groups.google.com/groups?q=agrawal+primes+implementation&hl=en&lr=&ie=UTF-8&oe=UTF-8&selm=20020809091925.28695.00002715%40mb-da.aol.com&rnum=2
+
+Hello All,
+
+Allow me to congratulate Drs. Agrawal, Kayal, and Saxena for their terrific
+result.
+It is simply fantastic.
+
+While I need some more time to fully understand their result (especially Lemmas
+4.4 and 4.7)
+it appears to be correct. Nicely done!
+
+That said, allow me to point out that the algorithm is totally impractical
+unless
+the conjecture in section 6 of their paper can be proved.
+
+Let's look at it. (I assume familiarity with their paper) All logs are base 2.
+
+Steps 3 to 10 can be done blazingly fast; I estimate only a few millisecs for n
+near
+512 bits.  How?  You pre-build a table of (q,r) such that q = (r-1)/2  and use
+the
+size of n to index into this table to find the smallest q that can work.  The
+inequality
+in step 7 is then automatically satisfied, and the congruence becomes a single
+precision
+Jacobi symbol computation (after computing n mod r).
+For a 512 bit n,  q will need to be (at minimum) about 1.5 million.  (the
+inequality shows
+that q > 5.65 log^2 n). The congruence in 7. will be satisfied with probability
+1/2
+so we will need to look at just 2 values for (q,r) on average when q = (r-1)/2.
+The Jacobi computation can be done very fast.
+Note that you do not need to check ALL r, one by one.  You pre-select r's that
+will work.
+
+The problem is the loop in 11-13.  Consider evaluating a SINGLE instance of the
+
+congruence in 12.  r will be near 3 million for a 512-bit n.  Thus, we must
+evaluate
+(say)  (x-1)^n  mod  (x^r-1)  mod n   and  x^n-1 mod (x^r-1) mod n.  Note that
+these
+are polynomials.  One can do the exponentiation via standard fast methods, BUT
+after about
+22 iterations (out of 512 needed; n is 512 bits), we will get intermediate
+expression 
+swell.  We will have a polynomial with about 3 million coefficients, each of
+512 bits,
+and we will need to repeatedly square this.  My joint paper with Peter
+Montgomery:
+
+P. Montgomery & R. Silverman
+An FFT Extension to the P-1 Factoring Algorithm
+Math Comp #54, 1990
+
+Shows exactly how one can use FFT's and the Chinese Remainder theorem to do
+such
+polynomial convolutions quickly.  But not that quickly.  Yes, my implementation
+of these
+methods was done on an Alliant (a 1985 vintage parallel computer with 4
+processors)
+and could be done a lot faster now, but not that much faster. (And I am sure
+the code
+could be improved). Maybe Peter can do better; he's a lot smarter than I am.
+
+
+Suppose we can do a single squaring of such a polynomial in a few milliseconds.
+
+The exponentiation will require 512 of these for each side of the congruence. 
+I estimate
+at a minimum, a carefully tuned implementation *might* be able to do a single
+evaluation
+of congruence 12 in a minimum of 10-15 seconds. (I suspect this is optimistic
+from experience)
+
+Now look at the bounds in step 11.  2 sqrt(r) log n,  for r = 3000000 and n =
+512 bits
+This is about 1.77 million iterations, each taking 10 seconds. This is about
+5000 HOURS
+for just a 512-bit prime. 
+
+Perhaps I am wrong and the congruence in 12. can be done more quickly. Even a
+factor of
+10, still gives a 500 hour run time.  
+
+512-bits can be done with existing methods e.g. the cyclotomic, aka APR test
+can do it in at worst a
+couple of minutes,  Elliptic curve methods a little longer.
+
+The method will be improved, I am sure. But it is not currently practical for
+even moderately
+sized primes.
+
+Just my opinion,  based on some back-of-envelope calculations and experience
+with working
+with large polynomials. Perhaps I am wrong, and there is a clever way to avoid
+the
+intermediate expression swell.  But I don't think so.
+
+It is, however, a SUPERB theoretical breakthrough.
+
+
+Bob Silverman
